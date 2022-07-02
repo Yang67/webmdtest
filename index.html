@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线前端和Markdown工具</title>
+    <!-- 这里主要是分离可以自定义的左右页面 -->
+    <link rel="stylesheet" type="text/css" href="jquery.splitter.css">
+    <!-- 这里引入编辑器的基础库codemirror -->
+    <link rel="stylesheet" type="text/css" href="lib/codemirror.css">
+    <!-- 这里我们编辑器默认使用github主题 -->
+    <link rel="stylesheet" type="text/css" href="theme/github-markdown.css">
+    <!-- <link rel="stylesheet" type="text/css" href="theme/monokai.css"> -->
+    <!-- 引入highlight的样式表 -->
+    <link rel="stylesheet" href="vs.min.css">
+    <!-- 引入分离的jquery基础库 -->
+    <script src="jquery-2.1.1.min.js"></script>
+    <script src="jquery.splitter.js"></script>
+    <!-- 引入我们使用的要识别的语言的codermirror库 -->
+    <script src="lib/codemirror.js"></script>
+    <script src="mode/javascript/javascript.js"></script>
+    <script src="mode/css/css.js"></script>
+    <script src="mode/xml/xml.js"></script>
+    <script src="mode/markdown/markdown.js"></script>
+    <script src="mode/htmlmixed/htmlmixed.js"></script>
+    <!-- html自动补全 -->
+    <script src="emmet.js"></script>
+    <!-- markdown解析器 -->
+    <script src="marked.min.js"></script>
+    <!-- 高亮库 -->
+    <script src="highlight.min.js"></script>
+
+    <!-- 内嵌式样式 -->
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        
+        body {
+            /* 编辑区字体 */
+            font-size: 14px;
+            /* 编辑区背景颜色 */
+            background: rgb(247, 247, 247);
+        }
+        
+        header {
+            line-height: 39px;
+            background: rgb(237, 237, 237);
+            border-bottom: hsl(0, 0%, 75%) solid 1px;
+            text-align: center;
+            height: 39px;
+            position: relative;
+        }
+        /* logo是使用c3字体样式模仿图片，兼容性好，效率高 */
+        .logo {
+            position: absolute;
+            margin-left: 10px;
+            background-color: #777;
+            background-image: linear-gradient(45deg, transparent 45%, hsla(48, 20%, 90%, 1) 45%, hsla(48, 20%, 90%, 1) 55%, transparent 0);
+            background-size: .05em .05em;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -webkit-text-stroke: 1px #444;
+            font-size: 24px;
+            font-weight: 800;
+        }
+        
+        header .tab {
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 28px;
+            line-height: 28px;
+            margin-top: 5px;
+            background: #fff;
+            height: 28px;
+            overflow: hidden;
+        }
+        
+        header span {
+            display: inline-block;
+            font-size: 14px;
+            text-align: center;
+            width: 100px;
+            line-height: 28px;
+            cursor: pointer;
+        }
+        
+        header span.on {
+            background-color: hsl(215, 100%, 96%);
+        }
+        
+        header .tips {
+            position: absolute;
+            right: 10px;
+            top: 0;
+            text-align: right;
+            color: #aaa;
+            font-size: 12px;
+            text-shadow: 1px 1px 1px #fff;
+        }
+        
+        header .contorl a {
+            border: 1px solid rgba(27, 31, 35, .2);
+            border-radius: .25em;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 12px;
+            line-height: 14px;
+            padding: 4px 8px;
+            position: relative;
+            white-space: nowrap;
+            background-color: #eff3f6;
+            color: #24292e;
+            text-decoration: none;
+        }
+        
+        header .contorl a:hover {
+            background-color: #e6ebf1;
+            border-color: rgba(27, 31, 35, .35);
+        }
+        
+        .preview {
+            border: none;
+            height: 100%;
+            background: #fff;
+            overflow-y: auto;
+            box-sizing: border-box;
+            padding: 10px;
+            width: 100%;
+        }
+        
+        #preview {
+            padding: 0px;
+        }
+        
+        .editbox {
+            height: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        
+        .CodeMirror {
+            height: auto;
+            background: rgb(247, 247, 247);
+        }
+        
+        .splitter_panel .vsplitter {
+            width: 1px;
+            background: transparent;
+            border-left: 1px solid #ccc;
+            z-index: 8;
+        }
+        
+        .splitter_panel .vsplitter:hover {
+            border-left: 1px dashed gray;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            webmd
+        </div>
+        <div class="tab">
+            <span class="on">HTML</span><span>Markdown</span>
+        </div>
+        <div class="tips">Editing, enjoy your writing</div>
+    </header>
+    <div class="container" id="content">
+        <div class="edit-view">
+            <div class="editbox">
+                <textarea id="htmlEdit">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Edit</title>
+</head>
+<body>
+    <!-- 内置emmet -->
+    
+</body>
+</html>
+</textarea>
+            </div>
+            <div class="editbox" style="display: none;">
+                <!-- <div class="editbox"> -->
+                <textarea id="MarkdownEdit"># Start Markdown now</textarea>
+            </div>
+        </div>
+        <div class="result-view">
+            <iframe id="preview" class="preview"></iframe>
+            <div id="mkview" class="preview markdown-body" style="display: none;"></div>
+            <!-- <div id="mkview" class="preview markdown-body"></div> -->
+        </div>
+    </div>
+
+    <script>
+        // 页面整体分离区
+        var cHeight = document.documentElement.clientHeight - 40;
+        var splitter = $('#content').height(cHeight).split({
+            orientation: "vertical",
+            limit: 10,
+            position: '50%'
+        });
+
+        var night = false;
+        var dom = document.getElementById('preview');
+        var editor = CodeMirror.fromTextArea(document.getElementById("htmlEdit"), {
+            lineNumbers: true,
+            mode: "htmlmixed",
+            indentUnit: 4,
+            lineWrapping: true,
+            styleActiveLine: true
+        });
+        // html自动补全
+        emmetCodeMirror(editor);
+        editor.on("keyup", function() {
+            runPreview()
+        });
+
+        var editorMark = CodeMirror.fromTextArea(document.getElementById("MarkdownEdit"), {
+            lineNumbers: true,
+            mode: "markdown",
+            indentUnit: 2,
+            lineWrapping: true,
+            styleActiveLine: true
+        });
+
+        editorMark.on("keyup", function() {
+            runMkview();
+        });
+
+        runPreview();
+        runMkview();
+        tab();
+
+        marked.setOptions({
+            highlight: function(code, lang) {
+                return hljs.highlightAuto(code).value;
+            }
+        })
+
+        function runPreview() {
+            dom.contentWindow.document.open();
+            dom.contentWindow.document.write(editor.getValue());
+            dom.contentWindow.document.close();
+        }
+
+        function runMkview() {
+            document.getElementById('mkview').innerHTML = marked(editorMark.getValue());
+        }
+
+        function tab() {
+            var head = document.getElementsByTagName('header');
+            var btns = head[0].getElementsByTagName('span');
+            var boxs = document.getElementsByClassName('editbox');
+            var views = document.getElementsByClassName('preview');
+            for (var i = 0; i < btns.length; i++) {
+                var btn = btns[i];
+                btn.index = i;
+                //按钮切换
+                btn.onclick = function() {
+                    for (var j = 0; j < btns.length; j++) {
+                        btns[j].className = '';
+                    }
+                    this.className = 'on';
+                    // 编辑页面随之切换
+                    for (var k = 0; k < boxs.length; k++) {
+                        boxs[k].style.display = 'none';
+                    }
+                    boxs[this.index].style.display = 'block';
+                    // 视图页面随之切换
+                    for (var h = 0; h < views.length; h++) {
+                        views[h].style.display = 'none';
+                    }
+                    views[this.index].style.display = 'block';
+                    //刷新文本域，防止打开默认折叠bug
+                    editor.refresh();
+                    editorMark.refresh();
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
